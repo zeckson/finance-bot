@@ -1,34 +1,20 @@
-import { rate } from "./finance.math.ts";
+import { rate as exchangeRate } from "./finance.math.ts";
 import { Currency } from "./finance.type.ts";
-
-const rubles = new Intl.NumberFormat("ru-RU", {
-  style: "currency",
-  currency: "RUB",
-});
-const usd = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  currencyDisplay: `code`,
-});
-
-const usdt = (value: Currency): string => usd.format(value)
-    .replace("USD", "USDT")
-    .trim()
-
-const rateFormat = new Intl.NumberFormat("ru-RU", {
-  style: "decimal",
-  maximumFractionDigits: 2,
-});
+import { rate } from "./formatters/rate.ts";
+import { roubles } from "./formatters/rouble.ts";
+import { usdt } from "./formatters/usdt.ts";
 
 export const printChangeRate = (
   given: Currency,
   received: Currency,
 ): string => {
-  const result = rate(given, received);
-  return `Поменял:  ${rubles.format(given)} (${usdt(received)}). Курс: ${
-    rateFormat.format(result)
+  const result = exchangeRate(given, received);
+  return `Поменял:  ${roubles(given)} (${usdt(received)}). Курс: ${
+    rate(result)
   }`;
 };
 
 export const printSentUSDT = (sent: Currency, commission: Currency = 1) =>
-    `Отправил: ${usdt(sent)} (+${usdt(commission)} commission) = ${usdt(sent + commission)}`;
+  `Отправил: ${usdt(sent)} (+${usdt(commission)} commission) = ${
+    usdt(sent + commission)
+  }`;
