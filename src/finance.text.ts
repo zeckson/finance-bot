@@ -29,3 +29,6 @@ export const printChangeRate = (
     rateFormat.format(result)
   }`;
 };
+
+export const printSentUSDT = (sent: Currency, commission: Currency = 1) =>
+    `Отправил: ${usdt(sent)} (+${usdt(commission)} commission) = ${usdt(sent + commission)}`;
