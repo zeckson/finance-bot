@@ -5,11 +5,15 @@ const rubles = new Intl.NumberFormat("ru-RU", {
   style: "currency",
   currency: "RUB",
 });
-const usdt = new Intl.NumberFormat("en-US", {
+const usd = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
   currencyDisplay: `code`,
 });
+
+const usdt = (value: Currency): string => usd.format(value)
+    .replace("USD", "USDT")
+    .trim()
 
 const rateFormat = new Intl.NumberFormat("ru-RU", {
   style: "decimal",
@@ -21,7 +25,7 @@ export const printChangeRate = (
   received: Currency,
 ): string => {
   const result = rate(given, received);
-  return `Поменял:  ${rubles.format(given)} (${usdt.format(received)}). Курс: ${
+  return `Поменял:  ${rubles.format(given)} (${usdt(received)}). Курс: ${
     rateFormat.format(result)
   }`;
 };
