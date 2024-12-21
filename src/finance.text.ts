@@ -9,7 +9,7 @@ export const printChangeRate = (
   received: Currency,
 ): string => {
   const result = exchangeRate(given, received);
-  return `Поменял:  ${roubles(given)} (${usdt(received)}). Курс: ${
+  return `Поменял: ${roubles(given)} (${usdt(received)}). Курс: ${
     rate(result)
   }`;
 };
