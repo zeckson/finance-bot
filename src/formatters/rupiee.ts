@@ -1,4 +1,4 @@
-import { Currency } from "../finance.type.ts"
+import { Currency } from "../finance/finance.type.ts"
 
 const FORMATTER = new Intl.NumberFormat("si-LK", {
   style: "currency",

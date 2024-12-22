@@ -1,4 +1,4 @@
-import { Rate } from "../finance.type.ts";
+import { Rate } from "../finance/finance.type.ts";
 
 const FORMATTER = new Intl.NumberFormat("ru-RU", {
   style: "decimal",
