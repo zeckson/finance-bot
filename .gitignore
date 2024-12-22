@@ -1,6 +1,9 @@
 # Idea project files
 .idea
 
+# Local environment
+.env
+
 # Deno Vendor lock files
 # https://docs.deno.com/runtime/fundamentals/modules/#vendoring-remote-modules
 vendor
