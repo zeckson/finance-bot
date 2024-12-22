@@ -33,6 +33,8 @@ jobs:
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         with:
           project: "zeckson-finance-bot"
           entrypoint: "main.ts"
