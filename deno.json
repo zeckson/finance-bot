@@ -11,8 +11,15 @@
     "telegraf": "npm:telegraf@4.16.3"
   },
   "vendor": true,
-  // https://docs.deno.com/runtime/fundamentals/modules/#frozen-lockfile
   "lock": {
     "frozen": true
+  },
+  "deploy": {
+    "project": "66097785-0b9b-45a0-9980-edd198bf573d",
+    "exclude": [
+      "**/node_modules"
+    ],
+    "include": [],
+    "entrypoint": "server.ts"
   }
 }
