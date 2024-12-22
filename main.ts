@@ -12,7 +12,7 @@ if (import.meta.main) {
   console.log(Markdown.sent(92, 1));
 
   try {
-    await bot.launch({}, () => {
+    await bot.launch( () => {
       console.log(`Telegram bot started: https://t.me/${bot.botInfo?.username}`)
     });
   } catch (err) {
