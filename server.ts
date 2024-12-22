@@ -45,6 +45,6 @@ Deno.serve(async (req) => {
 console.log(`Deno deploy url: ${deployUrl}`)
 
 // 5. Set webhook only for production
-await bot.telegram.setWebhook(`${deployUrl}/${bot.secretPathComponent()}`)
+// await bot.telegram.setWebhook(`${deployUrl}/${bot.secretPathComponent()}`)
 
 console.log(`Deno deploy url: ${deployUrl}/${bot.secretPathComponent()}`)
