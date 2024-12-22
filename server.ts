@@ -24,13 +24,10 @@ Deno.serve(async (req) => {
   try {
     if (req.method == "POST") {
       const url = new URL(req.url);
-      console.log("POST request url:", url);
       const path = url.pathname.slice(1);
       if (path == bot.secretPathComponent()) {
-        console.log("Got webhook request");
         try {
           const json = await req.json();
-          console.dir(json);
           await bot.handleUpdate(json);
           response = new Response("OK", { status: 200 });
         } catch (err) {
@@ -39,7 +36,7 @@ Deno.serve(async (req) => {
           response = Response.error();
         }
       } else if (path == "webhook") {
-        // 5. Set webhook only for production
+        // Set webhook only for production
         await bot.telegram.setWebhook(webhookPath);
 
         console.log(
