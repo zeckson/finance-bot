@@ -1,4 +1,4 @@
-import { bot } from "./src/bot.ts"
+import { bot } from "./src/bot.ts";
 
 const projectId = `zeckson-finance-bot`;
 const deploymentId = Deno.env.get(`DENO_DEPLOYMENT_ID`);
@@ -16,7 +16,7 @@ Deploy url: ${deployUrl}`,
     },
   );
 
-const handleUpdate = await bot.createWebhook({ domain: "example.com" });
+const webhookPath = `${deployUrl}/${bot.secretPathComponent()}`;
 
 Deno.serve(async (req) => {
   const start = Date.now();
@@ -24,15 +24,29 @@ Deno.serve(async (req) => {
   try {
     if (req.method == "POST") {
       const url = new URL(req.url);
-      if (url.pathname.slice(1) == bot.secretPathComponent()) {
+      console.log("POST request url:", url);
+      const path = url.pathname.slice(1);
+      if (path == bot.secretPathComponent()) {
         console.log("Got webhook request");
         try {
-          await handleUpdate(req, response);
+          const json = await req.json();
+          console.dir(json);
+          await bot.handleUpdate(json);
+          response = new Response("OK", { status: 200 });
         } catch (err) {
           console.error(err);
 
           response = Response.error();
         }
+      } else if (path == "webhook") {
+        // 5. Set webhook only for production
+        await bot.telegram.setWebhook(webhookPath);
+
+        console.log(
+          `Webhook is set to: ${deployUrl}/${bot.secretPathComponent()}`,
+        );
+
+        response = DEFAULT_RESPONSE(req);
       }
     }
   } finally {
@@ -47,8 +61,3 @@ Deno.serve(async (req) => {
 });
 
 console.log(`Deno deploy url: ${deployUrl}`);
-
-// 5. Set webhook only for production
-// await bot.telegram.setWebhook(`${deployUrl}/${bot.secretPathComponent()}`)
-
-console.log(`Deno deploy url: ${deployUrl}/${bot.secretPathComponent()}`);
