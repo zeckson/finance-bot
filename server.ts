@@ -16,7 +16,8 @@ Deploy url: ${deployUrl}`,
     },
   );
 
-const webhookPath = `${deployUrl}/${bot.secretPathComponent()}`;
+// TODO: hash token like it's done in bot.secretPathComponent
+const webhookPath = `${deployUrl}/${bot.telegram.token}`;
 
 Deno.serve(async (req) => {
   const start = Date.now();
@@ -25,7 +26,8 @@ Deno.serve(async (req) => {
     if (req.method == "POST") {
       const url = new URL(req.url);
       const path = url.pathname.slice(1);
-      if (path == bot.secretPathComponent()) {
+      if (path == bot.telegram.token) {
+        console.debug(`Got Update JSON from telegram server`);
         try {
           const json = await req.json();
           await bot.handleUpdate(json);
@@ -40,7 +42,7 @@ Deno.serve(async (req) => {
         await bot.telegram.setWebhook(webhookPath);
 
         console.log(
-          `Webhook is set to: ${deployUrl}/${bot.secretPathComponent()}`,
+          `Webhook is set to: ${webhookPath}`,
         );
 
         response = DEFAULT_RESPONSE(req);
