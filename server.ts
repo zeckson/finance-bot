@@ -32,8 +32,9 @@ Deno.serve(async (req) => {
       if (path == bot.telegram.token) {
         console.debug(`Got Update JSON from telegram server`);
         try {
-          const json = await req.json();
-          await bot.handleUpdate(json);
+          const event = await req.json();
+          console.debug(event)
+          await bot.handleUpdate(event);
           response = ok();
         } catch (err) {
           console.error(err);
