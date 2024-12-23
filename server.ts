@@ -6,7 +6,7 @@ const deployUrl = deploymentId
   ? `https://${projectId}${deploymentId ? `-${deploymentId}` : ``}.deno.dev`
   : `http://localhost:8000`;
 
-const DEFAULT_RESPONSE = (req: Request) =>
+const hello = (req: Request) =>
   new Response(
     `Hello World!
 Request url: ${req.url}
@@ -15,15 +15,18 @@ Deploy url: ${deployUrl}`,
       headers: { "content-type": "text/plain" },
     },
   );
+const notFound = () => new Response("NOT FOUND", { status: 404 });
+const ok = () => new Response("OK", { status: 200 });
 
 // TODO: hash token like it's done in bot.secretPathComponent
 const webhookPath = `${deployUrl}/${bot.telegram.token}`;
 
 Deno.serve(async (req) => {
   const start = Date.now();
-  let response = DEFAULT_RESPONSE(req);
+  let response = hello(req);
   try {
     if (req.method == "POST") {
+      response = notFound();
       const url = new URL(req.url);
       const path = url.pathname.slice(1);
       if (path == bot.telegram.token) {
@@ -31,7 +34,7 @@ Deno.serve(async (req) => {
         try {
           const json = await req.json();
           await bot.handleUpdate(json);
-          response = new Response("OK", { status: 200 });
+          response = ok();
         } catch (err) {
           console.error(err);
 
@@ -45,7 +48,7 @@ Deno.serve(async (req) => {
           `Webhook is set to: ${webhookPath}`,
         );
 
-        response = DEFAULT_RESPONSE(req);
+        response = hello(req);
       }
     }
   } finally {
