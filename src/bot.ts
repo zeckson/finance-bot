@@ -19,6 +19,13 @@ bot.command(`exchange`, (ctx) => {
     parse_mode: `MarkdownV2`,
   });
 });
+bot.command(`send`, (ctx) => {
+  const [_, sent] = ctx.message.text.split(` `);
+  const reply = Markdown.sent(Number(sent))
+  return ctx.reply(escapeMarkdownV2(reply), {
+    parse_mode: `MarkdownV2`,
+  });
+});
 bot.help((ctx) => ctx.reply("Help message"));
 bot.on("message", (ctx) => ctx.copyMessage(ctx.message.chat.id, keyboard));
 bot.action("delete", (ctx) => ctx.deleteMessage());
