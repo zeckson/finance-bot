@@ -26,6 +26,20 @@ bot.command(`send`, (ctx) => {
     parse_mode: `MarkdownV2`,
   });
 });
+bot.command(`received`, (ctx) => {
+  const [_, sent, received] = ctx.message.text.split(` `);
+  const reply = Markdown.usdt2lkr(Number(sent), Number(received))
+  return ctx.reply(escapeMarkdownV2(reply), {
+    parse_mode: `MarkdownV2`,
+  });
+});
+bot.command(`final`, (ctx) => {
+  const [_, sent, received] = ctx.message.text.split(` `);
+  const reply = Markdown.roubles2lkr(Number(sent), Number(received))
+  return ctx.reply(escapeMarkdownV2(reply), {
+    parse_mode: `MarkdownV2`,
+  });
+});
 bot.help((ctx) => ctx.reply("Help message"));
 bot.on("message", (ctx) => ctx.copyMessage(ctx.message.chat.id, keyboard));
 bot.action("delete", (ctx) => ctx.deleteMessage());
