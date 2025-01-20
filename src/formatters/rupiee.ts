@@ -1,8 +1,8 @@
-import { Currency } from "../finance/finance.type.ts"
+import { Currency } from '../finance/finance.type.ts'
 
-const FORMATTER = new Intl.NumberFormat("si-LK", {
-  style: "currency",
-  currency: "LKR",
+const FORMATTER = new Intl.NumberFormat('si-LK', {
+	style: 'currency',
+	currency: 'LKR',
 })
 
-export const rupees = (value: Currency): string => FORMATTER.format(value);
+export const rupees = (value: Currency): string => FORMATTER.format(value)

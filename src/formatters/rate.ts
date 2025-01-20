@@ -1,8 +1,8 @@
-import { Rate } from "../finance/finance.type.ts";
+import { Rate } from '../finance/finance.type.ts'
 
-const FORMATTER = new Intl.NumberFormat("ru-RU", {
-  style: "decimal",
-  maximumFractionDigits: 2,
-});
+const FORMATTER = new Intl.NumberFormat('ru-RU', {
+	style: 'decimal',
+	maximumFractionDigits: 2,
+})
 
-export const rate = (value: Rate): string => FORMATTER.format(value);
+export const rate = (value: Rate): string => FORMATTER.format(value)
