@@ -16,7 +16,7 @@ const store = new DenoStore(await openStore())
 
 const users = await store.list({prefix: ["user"]})
 
-console.log(users)
+console.log(`Records in DB: ${users.length}`)
 
 bot.use(async (ctx: Context<Update>, next: () => Promise<void>) => {
 	const user = ctx.from
