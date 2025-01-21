@@ -22,12 +22,12 @@ bot.use(async (ctx: Context<Update>, next: () => Promise<void>) => {
 	const user = ctx.from
 	if (user) {
 		const userkey = [`user`, user.id]
-		const value = await store.load(userkey)
-		if (!value) {
+		const entry = await store.load(userkey)
+		if (!entry.value) {
 			await store.save(userkey, user)
 			console.debug(`Saved user: ${JSON.stringify(user)}`)
 		} else {
-			console.debug(`Existing entry: ${JSON.stringify(value)}`)
+			console.debug(`Existing entry: ${JSON.stringify(entry)}`)
 		}
 	}
 	return await next()
