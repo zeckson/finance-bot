@@ -1,5 +1,7 @@
+import KvEntry = Deno.KvEntry
 import KvEntryMaybe = Deno.KvEntryMaybe
 import KvKey = Deno.KvKey
+import KvListSelector = Deno.KvListSelector
 
 export class DenoStore {
 	constructor(private db: Deno.Kv) {
@@ -12,6 +14,10 @@ export class DenoStore {
 
 	async load(key: KvKey): Promise<KvEntryMaybe<object>> {
 		return await this.db.get(key)
+	}
+
+	async list(selector: KvListSelector): Promise<KvEntry<object>[]> {
+		return await Array.fromAsync(this.db.list(selector))
 	}
 
 	close() {

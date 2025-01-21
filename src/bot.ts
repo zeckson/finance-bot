@@ -8,7 +8,15 @@ const { BOT_TOKEN, DENO_KV_URL } = Deno.env.toObject()
 if (!BOT_TOKEN) throw new Error('"BOT_TOKEN" env var is required!')
 const bot = new Telegraf(BOT_TOKEN)
 
-const store = new DenoStore(await Deno.openKv(DENO_KV_URL))
+const openStore = () => {
+	if (DENO_KV_URL) return Deno.openKv(DENO_KV_URL)
+	else return Deno.openKv()
+}
+const store = new DenoStore(await openStore())
+
+const users = await store.list({prefix: ["user"]})
+
+console.log(users)
 
 bot.use(async (ctx: Context<Update>, next: () => Promise<void>) => {
 	const user = ctx.from
