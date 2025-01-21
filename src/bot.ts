@@ -1,5 +1,5 @@
-import { Update } from "telegraf/types"
 import { Context, Markup, Telegraf } from 'telegraf'
+import { Update } from "telegraf/types"
 import { Markdown } from './finance/finance.md.ts'
 import { DenoStore } from "./store/denostore.ts"
 import { escapeMarkdownV2 } from './util/markdownv2.ts'
@@ -13,8 +13,14 @@ const store = new DenoStore(await Deno.openKv(DENO_KV_URL))
 bot.use(async (ctx: Context<Update>, next: () => Promise<void>) => {
 	const user = ctx.from
 	if (user) {
-		await store.save([`user`, user.id], user)
-		console.debug(`Saved user: ${JSON.stringify(user)}`)
+		const userkey = [`user`, user.id]
+		const value = await store.load(userkey)
+		if (!value) {
+			await store.save(userkey, user)
+			console.debug(`Saved user: ${JSON.stringify(user)}`)
+		} else {
+			console.debug(`Existing entry: ${JSON.stringify(value)}`)
+		}
 	}
 	return await next()
 })

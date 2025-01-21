@@ -1,3 +1,4 @@
+import KvEntryMaybe = Deno.KvEntryMaybe
 import KvKey = Deno.KvKey
 
 export class DenoStore {
@@ -9,9 +10,8 @@ export class DenoStore {
 		return result.ok
 	}
 
-	async load(key: string): Promise<object> {
-		const result = await this.db.get([key])
-		return result.value as object
+	async load(key: KvKey): Promise<KvEntryMaybe<object>> {
+		return await this.db.get(key)
 	}
 
 	close() {
