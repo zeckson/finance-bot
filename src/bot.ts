@@ -1,10 +1,23 @@
-import { Markup, Telegraf } from 'telegraf'
+import { Update } from "telegraf/types"
+import { Context, Markup, Telegraf } from 'telegraf'
 import { Markdown } from './finance/finance.md.ts'
+import { DenoStore } from "./store/denostore.ts"
 import { escapeMarkdownV2 } from './util/markdownv2.ts'
 
-const { BOT_TOKEN } = Deno.env.toObject()
+const { BOT_TOKEN, DENO_KV_URL } = Deno.env.toObject()
 if (!BOT_TOKEN) throw new Error('"BOT_TOKEN" env var is required!')
 const bot = new Telegraf(BOT_TOKEN)
+
+const store = new DenoStore(await Deno.openKv(DENO_KV_URL))
+
+bot.use(async (ctx: Context<Update>, next: () => Promise<void>) => {
+	const user = ctx.from
+	if (user) {
+		await store.save([`user`, user.id], user)
+		console.debug(`Saved user: ${JSON.stringify(user)}`)
+	}
+	return await next()
+})
 
 const keyboard = Markup.inlineKeyboard([
 	Markup.button.url('❤️', 'http://telegraf.js.org'),
