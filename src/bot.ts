@@ -1,36 +1,13 @@
 import { Bot, Context, InlineKeyboard } from 'grammy'
 import { Markdown } from './finance/finance.md.ts'
-import { DenoStore } from './store/denostore.ts'
+import store from "./middleware/store.ts"
 import { escapeMarkdownV2 } from './util/markdownv2.ts'
 
-const { BOT_TOKEN, DENO_KV_URL } = Deno.env.toObject()
+const { BOT_TOKEN } = Deno.env.toObject()
 if (!BOT_TOKEN) throw new Error('"BOT_TOKEN" env var is required!')
 const bot = new Bot(BOT_TOKEN)
 
-const openStore = () => {
-	if (DENO_KV_URL) return Deno.openKv(DENO_KV_URL)
-	else return Deno.openKv()
-}
-const store = new DenoStore(await openStore())
-
-const users = await store.list({ prefix: ['user'] })
-
-console.log(`Records in DB: ${users.length}`)
-
-bot.use(async (ctx: Context, next: () => Promise<void>) => {
-	const user = ctx.from
-	if (user) {
-		const userkey = [`user`, user.id]
-		const entry = await store.load(userkey)
-		if (!entry.value) {
-			await store.save(userkey, user)
-			console.debug(`Saved user: ${JSON.stringify(user)}`)
-		} else {
-			console.debug(`Existing entry: ${JSON.stringify(entry)}`)
-		}
-	}
-	return await next()
-})
+bot.use(store)
 
 const keyboard = InlineKeyboard.from([[
 	InlineKeyboard.url('❤️', 'https://zeckson.com'),
