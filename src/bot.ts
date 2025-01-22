@@ -1,5 +1,6 @@
 import { Bot, Context, InlineKeyboard } from 'grammy'
 import { Markdown } from './finance/finance.md.ts'
+import { log } from "./middleware/log.ts"
 import store from "./middleware/store.ts"
 import { escapeMarkdownV2 } from './util/markdownv2.ts'
 
@@ -7,6 +8,7 @@ const { BOT_TOKEN } = Deno.env.toObject()
 if (!BOT_TOKEN) throw new Error('"BOT_TOKEN" env var is required!')
 const bot = new Bot(BOT_TOKEN)
 
+bot.use(log)
 bot.use(store)
 
 const keyboard = InlineKeyboard.from([[
