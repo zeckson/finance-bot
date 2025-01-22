@@ -1,61 +1,26 @@
+import { handleWebhook, setWebhook } from "./server.deno.ts"
 import { bot } from './src/bot.ts'
 
-const projectId = `zeckson-finance-bot`
-const deploymentId = Deno.env.get(`DENO_DEPLOYMENT_ID`)
-const deployUrl = deploymentId
-	? `https://${projectId}${deploymentId ? `-${deploymentId}` : ``}.deno.dev`
-	: `http://localhost:8000`
+const PROJECT_ID = `zeckson-finance-bot`
+const DEPLOYMENT_ID = Deno.env.get(`DENO_DEPLOYMENT_ID`)
+const DEPLOY_URL = `https://${PROJECT_ID}${
+	DEPLOYMENT_ID ? `-${DEPLOYMENT_ID}` : ``
+}.deno.dev`
 
 const hello = (req: Request) =>
 	new Response(
-		`Hello World!
-Request url: ${req.url}
-Deploy url: ${deployUrl}`,
+		`Hello World!\nRequest url: ${req.url}\nDeploy url: ${DEPLOY_URL}`,
 		{
 			headers: { 'content-type': 'text/plain' },
 		},
 	)
-const notFound = () => new Response('NOT FOUND', { status: 404 })
-const ok = () => new Response('OK', { status: 200 })
-
-// TODO: hash token like it's done in bot.secretPathComponent
-const webhookPath = `${deployUrl}/${bot.telegram.token}`
-
-const setWebhook = async () => {
-	// Set webhook only for production
-	await bot.telegram.setWebhook(webhookPath)
-
-	console.log(
-		`Webhook is set to: ${webhookPath}`,
-	)
-}
 
 Deno.serve(async (req) => {
 	const start = Date.now()
 	let response = hello(req)
 	try {
-		if (req.method == 'POST') {
-			response = notFound()
-			const url = new URL(req.url)
-			const path = url.pathname.slice(1)
-			if (path == bot.telegram.token) {
-				console.debug(`Got Update JSON from telegram server`)
-				try {
-					const event = await req.json()
-					console.debug(event)
-					await bot.handleUpdate(event)
-					response = ok()
-				} catch (err) {
-					console.error(err)
-
-					response = Response.error()
-				}
-			} else if (path == 'webhook') {
-				await setWebhook()
-
-				response = hello(req)
-			}
-		}
+		const webhookResponse = await handleWebhook(req)
+		response = webhookResponse ?? response
 	} finally {
 		console.debug(
 			`${req.method} ${req.url} - ${response.status} "${response.type}" in ${
@@ -67,6 +32,6 @@ Deno.serve(async (req) => {
 	return response
 })
 
-await setWebhook()
+await setWebhook(`${DEPLOY_URL}/${bot.token}`)
 
-console.log(`Deno deploy url: ${deployUrl}`)
+console.log(`Deno deploy url: ${DEPLOY_URL}`)
