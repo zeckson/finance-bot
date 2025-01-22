@@ -1,6 +1,6 @@
 import { Bot, Context, InlineKeyboard } from 'grammy'
 import { Markdown } from './finance/finance.md.ts'
-import { DenoStore } from "./store/denostore.ts"
+import { DenoStore } from './store/denostore.ts'
 import { escapeMarkdownV2 } from './util/markdownv2.ts'
 
 const { BOT_TOKEN, DENO_KV_URL } = Deno.env.toObject()
@@ -69,7 +69,10 @@ bot.command(`final`, (ctx) => {
 	})
 })
 bot.command(`help`, (ctx) => ctx.reply('Help message'))
-bot.on('message', (ctx) => ctx.copyMessage(ctx.message.chat.id, {reply_markup: keyboard}))
+bot.on(
+	'message',
+	(ctx) => ctx.copyMessage(ctx.message.chat.id, { reply_markup: keyboard }),
+)
 bot.callbackQuery('delete', (ctx) => ctx.deleteMessage())
 
 export { bot }

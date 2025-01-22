@@ -1,4 +1,4 @@
-import { handleWebhook, setWebhook } from "./server.deno.ts"
+import { handleWebhook, setWebhook } from './server.deno.ts'
 import { bot } from './src/bot.ts'
 
 const PROJECT_ID = `zeckson-finance-bot`
